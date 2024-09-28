@@ -16,6 +16,7 @@ d_vars <- c("Average temp" = "temp_avg",
             "Total sunshine" = "total_sun")
 
 ui <- page_sidebar(
+    theme = bs_theme(version = 5),
     title = "Weather Data",
     sidebar = sidebar(
         selectInput(
@@ -71,8 +72,7 @@ server <- function(input, output, session) {
             value_box(
                 title = "Average Temp",
                 value = mean(d_city()$temp_avg, na.rm = TRUE) |> clean(),
-                showcase = bsicons::bs_icon("thermometer-half"),
-                theme = "success"
+                showcase = bsicons::bs_icon("thermometer-half", theme = "text-success")
             ),
             value_box(
                 title = "Minimum Temp",
@@ -84,7 +84,7 @@ server <- function(input, output, session) {
                 title = "Maximum Temp",
                 value = max(d_city()$temp_max, na.rm = TRUE) |> clean(),
                 showcase = bsicons::bs_icon("thermometer-sun"),
-                theme = "danger"
+                theme = "pink"
             )
         )
     })

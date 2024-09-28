@@ -16,8 +16,8 @@ ui <- fluidPage(
           "Denver",
           #"Los Angeles",
           "John F. Kennedy",
-          "Miami"
-          #"Portland"
+          "Miami",
+          "Portland"
         )
       ) 
     ),
