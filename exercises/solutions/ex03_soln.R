@@ -54,7 +54,7 @@ server <- function(input, output, session) {
       mutate(
         year = lubridate::year(date) |> as.integer()
       ) |>
-      summarize(
+      summarise(
         `min temp` = min(temp_min),
         `max temp` = max(temp_max),
         .by = year
