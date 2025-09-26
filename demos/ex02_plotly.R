@@ -1,5 +1,6 @@
 library(tidyverse)
 library(shiny)
+library(plotly)
 
 d <- readr::read_csv(here::here("data/weather.csv"))
 

@@ -3,9 +3,9 @@ library(ggplot2)
 library(shiny)
 library(bslib)
 
-d <- readr::read_csv(here::here("data/weather.csv"))
+d = readr::read_csv(here::here("data/weather.csv"))
 
-d_vars <- c("Average temp" = "temp_avg",
+d_vars = c("Average temp" = "temp_avg",
            "Min temp" = "temp_min",
            "Max temp" = "temp_max",
            "Total precip" = "precip",
@@ -14,7 +14,7 @@ d_vars <- c("Average temp" = "temp_avg",
            "Wind speed" = "wind_speed",
            "Air pressure" = "air_press")
 
-ui <- page_sidebar(
+ui = page_sidebar(
   title = "Weather Data",
   sidebar = sidebar(
     selectInput(
@@ -46,7 +46,7 @@ ui <- page_sidebar(
   uiOutput("valueboxes")
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
   observe({
     updateSelectInput(
       session, "name",
@@ -57,7 +57,7 @@ server <- function(input, output, session) {
     )
   })
   
-  output$valueboxes <- renderUI({
+  output$valueboxes = renderUI({
     clean = function(x) {
       round(x,1) |> paste("°C")
     }
@@ -84,17 +84,17 @@ server <- function(input, output, session) {
     )
   })
   
-  output$title <- renderText({
+  output$title = renderText({
     names(d_vars)[d_vars==input$var]
   })
   
-  d_city <- reactive({
+  d_city = reactive({
     req(input$name)
     d |>
       filter(name %in% input$name)
   })
   
-  output$plot <- renderPlot({
+  output$plot = renderPlot({
     d_city() |>
       ggplot(aes(x=date, y=.data[[input$var]])) +
       geom_line() +

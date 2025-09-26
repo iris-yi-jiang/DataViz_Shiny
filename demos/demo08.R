@@ -2,19 +2,16 @@ library(tidyverse)
 library(shiny)
 library(bslib)
 
-d <- readr::read_csv(here::here("data/weather.csv"))
+d = readr::read_csv(here::here("data/weather.csv"))
 
-d_vars <- c("Average temp" = "temp_avg",
-           "Min temp" = "temp_min",
-           "Max temp" = "temp_max",
-           "Total precip" = "precip",
-           "Snow depth" = "snow",
-           "Wind direction" = "wind_direction",
-           "Wind speed" = "wind_speed",
-           "Air pressure" = "air_press")
+d_vars = c(
+  "Average temp" = "temp_avg",   "Min temp"       = "temp_min",
+  "Max temp"     = "temp_max",   "Total precip"   = "precip",
+  "Snow depth"   = "snow",       "Wind direction" = "wind_direction",
+  "Wind speed"   = "wind_speed", "Air pressure"   = "air_press"
+)
 
-ui <- page_sidebar(
-  theme = bs_theme(),
+ui = page_sidebar(
   title = "Weather Data",
   sidebar = sidebar(
     selectInput(
@@ -31,7 +28,7 @@ ui <- page_sidebar(
   ),
   card(
     card_header(
-      textOutput("title"),
+      textOutput("title")
     ),
     card_body(
       plotOutput("plot")
@@ -40,9 +37,7 @@ ui <- page_sidebar(
   uiOutput("valueboxes")
 )
 
-server <- function(input, output, session) {
-  bslib::bs_themer()
-  
+server = function(input, output, session) {
   observe({
     updateSelectInput(
       session, "name",
@@ -53,7 +48,7 @@ server <- function(input, output, session) {
     )
   })
   
-  output$valueboxes <- renderUI({
+  output$valueboxes = renderUI({
     clean = function(x) {
       round(x,1) |> paste("°C")
     }
@@ -80,17 +75,17 @@ server <- function(input, output, session) {
     )
   })
   
-  output$title <- renderText({
+  output$title = renderText({
     names(d_vars)[d_vars==input$var]
   })
   
-  d_city <- reactive({
+  d_city = reactive({
     req(input$name)
     d |>
       filter(name %in% input$name)
   })
   
-  output$plot <- renderPlot({
+  output$plot = renderPlot({
     d_city() |>
       ggplot(aes(x=date, y=.data[[input$var]])) +
       geom_line() +

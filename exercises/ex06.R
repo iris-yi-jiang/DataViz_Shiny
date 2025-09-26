@@ -2,20 +2,16 @@ library(tidyverse)
 library(shiny)
 library(bslib)
 
-d <- readr::read_csv(here::here("data/weather.csv"))
+d = readr::read_csv(here::here("data/weather.csv"))
 
-d_vars <- c("Average temp" = "temp_avg",
-           "Min temp" = "temp_min",
-           "Max temp" = "temp_max",
-           "Total precip" = "precip",
-           "Snow depth" = "snow",
-           "Wind direction" = "wind_direction",
-           "Wind speed" = "wind_speed",
-           "Air pressure" = "air_press")
+d_vars = c(
+  "Average temp" = "temp_avg",   "Min temp"       = "temp_min",
+  "Max temp"     = "temp_max",   "Total precip"   = "precip",
+  "Snow depth"   = "snow",       "Wind direction" = "wind_direction",
+  "Wind speed"   = "wind_speed", "Air pressure"   = "air_press"
+)
 
-thematic::thematic_shiny(bg = "auto", fg = "auto", font = "auto")
-
-ui <- page_sidebar(
+ui = page_sidebar(
   theme = bs_theme(),
   title = "Weather Data",
   sidebar = sidebar(
@@ -25,29 +21,24 @@ ui <- page_sidebar(
     ),
     selectInput(
       "name", "Select an airport", choices = c()
+    ),
+    selectInput(
+      "var", "Select a variable",
+      choices = d_vars, selected = "temp_avg"
     )
   ),
   card(
     card_header(
-      textOutput("title"),
-      popover(
-        bsicons::bs_icon("gear", title = "Settings"),
-        selectInput(
-          "var", "Select a variable",
-          choices = d_vars, selected = "temp_avg"
-        )
-      ),
-      class = "d-flex justify-content-between align-items-center"
+      textOutput("title")
     ),
     card_body(
       plotOutput("plot")
-    ),
-    full_screen = TRUE
+    )
   ),
   uiOutput("valueboxes")
 )
 
-server <- function(input, output, session) {
+server = function(input, output, session) {
   bslib::bs_themer()
   
   observe({
@@ -60,7 +51,7 @@ server <- function(input, output, session) {
     )
   })
   
-  output$valueboxes <- renderUI({
+  output$valueboxes = renderUI({
     clean = function(x) {
       round(x,1) |> paste("°C")
     }
@@ -87,22 +78,24 @@ server <- function(input, output, session) {
     )
   })
   
-  output$title <- renderText({
+  output$title = renderText({
     names(d_vars)[d_vars==input$var]
   })
   
-  d_city <- reactive({
+  d_city = reactive({
     req(input$name)
     d |>
       filter(name %in% input$name)
   })
   
-  output$plot <- renderPlot({
+  output$plot = renderPlot({
     d_city() |>
       ggplot(aes(x=date, y=.data[[input$var]])) +
       geom_line() +
       theme_minimal()
   })
 }
+
+thematic::thematic_shiny()
 
 shinyApp(ui = ui, server = server)
